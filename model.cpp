@@ -16,7 +16,7 @@ void model::init()
             nbr[i].push_back(n2);
 
             std::cout << ">>>>>>>>i =" << i << "   "
-                      << "n1/n2" << n1 << " " << n2;
+                      << "n1/n2" << n1 << " " << n2 << std::endl;
         }
 
         //        row = std::get<0>(x_y_dic[i]);
@@ -29,18 +29,4 @@ void model::init()
     }
 }
 
-int model::get_nbr(const int i, const int number)
-{
-    return nbr[i][number];
-    //    switch(number)
-    //    {
-    //        case 0:
-    //            return std::get<0>(nbr[i]);
-    //        case 1:
-    //            return std::get<1>(nbr[i]);
-    //        case 2:
-    //            return std::get<2>(nbr[i]);
-    //        case 3:
-    //            return std::get<3>(nbr[i]);
-    //    }
-}
+

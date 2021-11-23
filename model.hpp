@@ -29,7 +29,7 @@ public:
     int get_L() { return L; }
     int get_N() { return N; }
     int get_Ntrials() { return N_trials; }
-    int get_nbr(const int i, const int number);
+    inline int get_nbr(const int i, const int number) const { return nbr[i][number]; }
 
 private:
     int L;

@@ -11,6 +11,7 @@
 #include <iostream>
 #include <random>
 #include <vector>
+#include <limits.h>
 
 using d_vector = std::vector<double>;
 
@@ -18,24 +19,19 @@ d_vector linspace(double min, double max, int nbr, bool endpoint = false);
 
 void initLattice(std::vector<int> &S);
 
-template <typename T>
-T randomChoice(std::vector<T> const vec)
+inline int randomChoice(const std::vector<int> &vec)
 {
     assert(vec.size() != 0);
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<> dis(0, vec.size() - 1);
-    return vec[dis(gen)];
-}
-template <typename T>
-bool isInVector(std::vector<T> const v, T elem)
-{
-    auto result = std::find(v.begin(), v.end(), elem);
-    if (result == v.end())
-    {
-        return false;
-    }
-    return true;
+
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
+    static std::uniform_int_distribution<> dis(0, INT_MAX);
+
+    return vec[dis(gen) % vec.size()];
 }
 
+inline bool isInVector(const std::vector<int> &v, int elem)
+{
+    return std::find(v.cbegin(), v.cend(), elem) != v.cend();
+}
 #endif

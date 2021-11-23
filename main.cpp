@@ -77,14 +77,15 @@ int main(int argc, const char *argv[])
                 s = randomChoice(pocket);
                 for (int k = 0; k < 2 * params.D; k++)
                 {
-                    if (S[mod.get_nbr(s, k)] == S[s])
+                    const int nbr = mod.get_nbr(s, k);
+                    if (S[nbr] == S[s])
                     {
-                        if (!isInVector(cluster, mod.get_nbr(s, k)))
+                        if (!isInVector(cluster, nbr))
                         {
                             if (dis_real(gen) < p)
                             {
-                                pocket.push_back(mod.get_nbr(s, k));
-                                cluster.push_back(mod.get_nbr(s, k));
+                                pocket.push_back(nbr);
+                                cluster.push_back(nbr);
                             }
                         }
                     }
@@ -105,7 +106,7 @@ int main(int argc, const char *argv[])
                 energy[j] += (nbrEnergy / 2.0);
             }
 
-            cluster.resize(0);
+            cluster.clear();
             magnetization[j] = std::abs(std::accumulate(S.begin(), S.end(), 0.0));
             txt << params.D << "\t" << params.L << "\t" << tNum[i] << "\t" << magnetization[j]
                 << "\t" << energy[j] << std::endl;
