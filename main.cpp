@@ -24,6 +24,7 @@
 
 using i_vector = std::vector<int>;
 
+
 // This is probably not needed.
 double deltaE(int S0, int Sn)
 {
@@ -75,9 +76,9 @@ int main(int argc, const char *argv[])
             while (pocket.size() != 0)
             {
                 s = randomChoice(pocket);
-                for (int k = 0; k < 2 * params.D; k++)
+                for (int kk = 0; kk < mod.nbrCountForNode(s); kk++)
                 {
-                    const int nbr = mod.get_nbr(s, k);
+                    const int nbr = mod.get_nbr(s, kk);
                     if (S[nbr] == S[s])
                     {
                         if (!isInVector(cluster, nbr))
@@ -99,13 +100,13 @@ int main(int argc, const char *argv[])
             for (int a = 0; a < mod.get_N(); a++)
             {
                 double nbrEnergy = 0;
-                for (int b = 0; b < 2 * params.D; b++)
+                for (int b = 0; b < mod.nbrCountForNode(a); b++)
                 {
                     nbrEnergy += S[a] * S[mod.get_nbr(a, b)];
                 }
                 energy[j] += (nbrEnergy / 2.0);
             }
-
+            std::cout<<"e_ "<< energy[j]<<std::endl;
             cluster.clear();
             magnetization[j] = std::abs(std::accumulate(S.begin(), S.end(), 0.0));
             txt << params.D << "\t" << params.L << "\t" << tNum[i] << "\t" << magnetization[j]

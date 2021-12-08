@@ -1,32 +1,73 @@
 #include "model.hpp"
 
+static int power(int N,int P){ return (P==0)? 1: N*power(N,P-1); }
+static int mod(int a, int b){return a %b;}
+
 void model::init()
-{
-    nbr.resize(N);
-    for (unsigned int i = 0; i < N; i++)
-    {
-        for (unsigned j = 0; j < D; j++)
-        {
-            unsigned n1 = pow(L, j + 1) * (i / ((unsigned)pow(L, j + 1)))
-                          + fmod(i + pow(L, j), pow(L, j + 1));
-            unsigned n2 = pow(L, j + 1) * (i / ((unsigned)pow(L, j + 1)))
-                          + fmod(pow(L, j + 1) + i - pow(L, j), pow(L, j + 1));
-
-            nbr[i].push_back(n1);
-            nbr[i].push_back(n2);
-
-            std::cout << ">>>>>>>>i =" << i << "   "
-                      << "n1/n2" << n1 << " " << n2 << std::endl;
+{   
+    
+    std::vector<std::vector<int>> neigh1(power(L,D-1));
+    int u=0;
+    for (unsigned int k = 0; k < power(L,D-1);k++){
+        for (unsigned int p = 0; p<L;p++){
+            neigh1[k].push_back(u);
+            u++;
         }
-
-        //        row = std::get<0>(x_y_dic[i]);
-        //        column = std::get<1>(x_y_dic[i]);
-        //        up = site_dic[std::make_tuple((row-1+L)%L, column)];
-        //        right = site_dic[std::make_tuple(row, (column+1)%L)];
-        //        dn = site_dic[std::make_tuple((row+1)%L, column)];
-        //        left = site_dic[std::make_tuple(row, (column-1+L)%L)];
-        //        nbr[i] = std::make_tuple(right, up, left,dn);
     }
-}
+    nbr.resize(N);
+    u = 0;
+    for (unsigned int a = 0; a < power(L,D-1); a++){
+        for (unsigned int b = 0; b<L;b++){
+            for (unsigned int j = 0; j<D;j++){
+                unsigned int ne2 = neigh1[a][b]+power(L,j); 
+                unsigned int ne1 = neigh1[a][b]-power(L,j);                 
+            if (j==0){
+                if (b==0){ 
+                nbr[u].push_back(ne2);
+                std::cout << ">>>>>>>>i =" << u << "   "
+                   << "n2 " << ne2 << std::endl;
+                }
+                else if (b==L-1){
+                nbr[u].push_back(ne1);
+                std::cout << ">>>>>>>>i =" << u << "   "
+                   << "n1 " << ne1 << std::endl;
+                }
+                else {
+                nbr[u].push_back(ne1);
+                nbr[u].push_back(ne2);
+                std::cout << ">>>>>>>>i =" << u << "   "
+                   << "n1 " << ne1 << std::endl;
+                std::cout << ">>>>>>>>i =" << u << "   "
+                   << "n2 " << ne2 << std::endl;
+                }
+            }
+            else {
+                if (mod(a,power(L,j))<power(L,j-1)) {
+                nbr[u].push_back(ne2);
+                std::cout << ">>>>>>>>i =" << u << "   "
+                   << "n2 " << ne2 <<  std::endl;
+                }
+                else if (mod(a,power (L,j)) >= power(L,j-1)*(L-1)) {
+                nbr[u].push_back(ne1);
+                std::cout << ">>>>>>>>i =" << u << "   "
+                   << "n1 " << ne1 << std::endl;
+                }
+                else {
+                nbr[u].push_back(ne1);
+                nbr[u].push_back(ne2);
+                std::cout << ">>>>>>>>i =" << u << "   "
+                   << "n1 " << ne1 << std::endl;
+                std::cout << ">>>>>>>>i =" << u << "   "
+                   << "n2 " << ne2 << std::endl;
+                }
+            }
+            }
+        std::cout << nbrCountForNode(u)<< std::endl;    
+        u++;
+        }
+    }
+    
+    }
+
 
 
