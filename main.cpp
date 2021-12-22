@@ -17,6 +17,8 @@
 #include <random>
 #include <tuple>
 #include <vector>
+#include <stdio.h>
+#include <unordered_set>
 // #include <boost/filesystem.hpp>
 #include "config.hpp"
 #include "model.hpp"
@@ -51,7 +53,8 @@ int main(int argc, const char *argv[])
     d_vector tNum = linspace(params.Tmin, params.Tmax, params.nT, true);
     d_vector meanMag(tNum.size());
     d_vector meanEne(tNum.size());
-    i_vector pocket, cluster;
+    i_vector pocket/*, cluster*/;
+    std::unordered_set<int> cluster;
     i_vector S(mod.get_N());
     double beta;
     double p;
@@ -72,7 +75,8 @@ int main(int argc, const char *argv[])
             energy[j] = 0;
             k = dis(gen);
             pocket.push_back(k);
-            cluster.push_back(k);
+//            cluster.push_back(k);
+            cluster.insert(k);
             while (pocket.size() != 0)
             {
                 s = randomChoice(pocket);
@@ -81,21 +85,31 @@ int main(int argc, const char *argv[])
                     const int nbr = mod.get_nbr(s, kk);
                     if (S[nbr] == S[s])
                     {
-                        if (!isInVector(cluster, nbr))
+                        // if (!isInVector(cluster, nbr))
+                        const std::unordered_set<int>::const_iterator nbrI = cluster.find(nbr);
+                        if (nbrI == cluster.cend())
                         {
                             if (dis_real(gen) < p)
                             {
                                 pocket.push_back(nbr);
-                                cluster.push_back(nbr);
+//                                cluster.push_back(nbr);
+                                cluster.insert(nbr);
+
                             }
                         }
                     }
                 }
                 pocket.erase(std::remove(pocket.begin(), pocket.end(), s), pocket.end());
             }
-            for (size_t l = 0; l < cluster.size(); l++)
+            std::cout << "1"<< std::endl;
+            //            for (size_t l = 0; l < cluster.size(); l++)
+            //            {
+            //                S[cluster[l]] = -S[cluster[l]];
+            //            }
+            for (std::unordered_set<int>::const_iterator nbrI = cluster.cbegin();
+                 nbrI != cluster.cend(); ++nbrI)
             {
-                S[cluster[l]] = -S[cluster[l]];
+                S[*nbrI] = -S[*nbrI];
             }
             for (int a = 0; a < mod.get_N(); a++)
             {
