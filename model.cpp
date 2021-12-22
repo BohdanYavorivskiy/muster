@@ -24,45 +24,45 @@ void model::init()
             if (j==0){
                 if (b==0){ 
                 nbr[u].push_back(ne2);
-                std::cout << ">>>>>>>>i =" << u << "   "
-                   << "n2 " << ne2 << std::endl;
+//                std::cout << ">>>>>>>>i =" << u << "   "
+//                   << "n2 " << ne2 << std::endl;
                 }
                 else if (b==L-1){
                 nbr[u].push_back(ne1);
-                std::cout << ">>>>>>>>i =" << u << "   "
-                   << "n1 " << ne1 << std::endl;
+//                std::cout << ">>>>>>>>i =" << u << "   "
+//                   << "n1 " << ne1 << std::endl;
                 }
                 else {
                 nbr[u].push_back(ne1);
                 nbr[u].push_back(ne2);
-                std::cout << ">>>>>>>>i =" << u << "   "
-                   << "n1 " << ne1 << std::endl;
-                std::cout << ">>>>>>>>i =" << u << "   "
-                   << "n2 " << ne2 << std::endl;
+//                std::cout << ">>>>>>>>i =" << u << "   "
+//                   << "n1 " << ne1 << std::endl;
+//                std::cout << ">>>>>>>>i =" << u << "   "
+//                   << "n2 " << ne2 << std::endl;
                 }
             }
             else {
                 if (mod(a,power(L,j))<power(L,j-1)) {
                 nbr[u].push_back(ne2);
-                std::cout << ">>>>>>>>i =" << u << "   "
-                   << "n2 " << ne2 <<  std::endl;
+//                std::cout << ">>>>>>>>i =" << u << "   "
+//                   << "n2 " << ne2 <<  std::endl;
                 }
                 else if (mod(a,power (L,j)) >= power(L,j-1)*(L-1)) {
                 nbr[u].push_back(ne1);
-                std::cout << ">>>>>>>>i =" << u << "   "
-                   << "n1 " << ne1 << std::endl;
+//                std::cout << ">>>>>>>>i =" << u << "   "
+//                   << "n1 " << ne1 << std::endl;
                 }
                 else {
                 nbr[u].push_back(ne1);
                 nbr[u].push_back(ne2);
-                std::cout << ">>>>>>>>i =" << u << "   "
-                   << "n1 " << ne1 << std::endl;
-                std::cout << ">>>>>>>>i =" << u << "   "
-                   << "n2 " << ne2 << std::endl;
+//                std::cout << ">>>>>>>>i =" << u << "   "
+//                   << "n1 " << ne1 << std::endl;
+//                std::cout << ">>>>>>>>i =" << u << "   "
+//                   << "n2 " << ne2 << std::endl;
                 }
             }
             }
-        std::cout << nbrCountForNode(u)<< std::endl;    
+//        std::cout << nbrCountForNode(u)<< std::endl;
         u++;
         }
     }
