@@ -23,6 +23,7 @@
 #include "config.hpp"
 #include "model.hpp"
 #include "tools.hpp"
+#include "timer.h"
 
 using i_vector = std::vector<int>;
 
@@ -53,7 +54,7 @@ int main(int argc, const char *argv[])
     d_vector tNum = linspace(params.Tmin, params.Tmax, params.nT, true);
     d_vector meanMag(tNum.size());
     d_vector meanEne(tNum.size());
-    i_vector pocket/*, cluster*/;
+    std::unordered_set<int> pocket;
     std::unordered_set<int> cluster;
     i_vector S(mod.get_N());
     double beta;
@@ -72,45 +73,48 @@ int main(int argc, const char *argv[])
         initLattice(S);
         for (size_t j = 0; j < mod.get_Ntrials(); j++)
         {
+            size_t maxPocketSize = 0;
+            Timer timer;
+            timer.restart();
+
             energy[j] = 0;
             k = dis(gen);
-            pocket.push_back(k);
-//            cluster.push_back(k);
+            pocket.insert(k);
             cluster.insert(k);
             while (pocket.size() != 0)
             {
-                s = randomChoice(pocket);
+                s = *pocket.cbegin();
                 for (int kk = 0; kk < mod.nbrCountForNode(s); kk++)
                 {
                     const int nbr = mod.get_nbr(s, kk);
                     if (S[nbr] == S[s])
                     {
-                        // if (!isInVector(cluster, nbr))
                         const std::unordered_set<int>::const_iterator nbrI = cluster.find(nbr);
                         if (nbrI == cluster.cend())
                         {
                             if (dis_real(gen) < p)
                             {
-                                pocket.push_back(nbr);
-//                                cluster.push_back(nbr);
+                                pocket.insert(nbr);
                                 cluster.insert(nbr);
-
                             }
                         }
                     }
                 }
-                pocket.erase(std::remove(pocket.begin(), pocket.end(), s), pocket.end());
+
+                if (maxPocketSize < pocket.size())
+                    maxPocketSize = pocket.size();
+
+                pocket.erase(s);
             }
-            std::cout << "1"<< std::endl;
-            //            for (size_t l = 0; l < cluster.size(); l++)
-            //            {
-            //                S[cluster[l]] = -S[cluster[l]];
-            //            }
+
+            std::cout << "maxPocketSize: " << maxPocketSize
+                      << " \t spend time mS: " << timer.elapsed() << std::endl;
             for (std::unordered_set<int>::const_iterator nbrI = cluster.cbegin();
                  nbrI != cluster.cend(); ++nbrI)
             {
                 S[*nbrI] = -S[*nbrI];
             }
+
             for (int a = 0; a < mod.get_N(); a++)
             {
                 double nbrEnergy = 0;
@@ -120,7 +124,8 @@ int main(int argc, const char *argv[])
                 }
                 energy[j] += (nbrEnergy / 2.0);
             }
-            std::cout<<"e_ "<< energy[j]<<std::endl;
+
+            std::cout << "e_ " << energy[j] << std::endl;
             cluster.clear();
             magnetization[j] = std::abs(std::accumulate(S.begin(), S.end(), 0.0));
             txt << params.D << "\t" << params.L << "\t" << tNum[i] << "\t" << magnetization[j]
